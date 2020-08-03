@@ -126,7 +126,7 @@ function getFactory(directoryPath, configuration) {
         if (data) {
             factory.write(data, callback);
         }
-        else {
+        else if (callback) {
             callback();
         }
         if (stream) stream.end();
