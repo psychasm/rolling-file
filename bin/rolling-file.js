@@ -22,7 +22,7 @@ const store = {};
 module.exports = function(directoryPath, configuration) {
     const config = schema.normalize(configuration || {});
     const key = directoryPath + JSON.stringify(config);
-    if (!store.hasOwnProperty(key)) store[key] = getFactory(directoryPath, configuration);
+    if (!store.hasOwnProperty(key) || store[key].isTerminal()) store[key] = getFactory(directoryPath, configuration);
     return store[key];
 };
 
@@ -119,10 +119,23 @@ function getFactory(directoryPath, configuration) {
     };
 
     factory.end = function(data, callback) {
-        factory.write(data, callback);
+        if (data && typeof data === 'function') {
+            callback = data;
+            data = undefined;
+        }
+        if (data) {
+            factory.write(data, callback);
+        }
+        else {
+            callback();
+        }
         if (stream) stream.end();
         terminal = true;
     };
+
+    factory.isTerminal = function() {
+        return terminal;
+    }
 
     return factory;
 }
