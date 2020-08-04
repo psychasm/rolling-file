@@ -27,9 +27,9 @@ exports.readFile = function (path, options = {}) {
   })
 }
 
-exports.stat = function (path, options = {}) {
+exports.stat = function (...args) {
   return new Promise((resolve, reject) => {
-    fs.stat(path, options, (err, stats) => {
+    fs.stat(...args, (err, stats) => {
         if (err) return reject(err)
         resolve(stats)
     })
